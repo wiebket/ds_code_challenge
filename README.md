@@ -34,9 +34,8 @@ DS coding challenge for CoCT
 │
 ├── models             <- Trained and serialized models, model predictions, or model summaries
 │
-├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-│                         the creator's initials, and a short `-` delimited description, e.g.
-│                         `1.0-jqp-initial-data-exploration`.
+├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering), 
+│                        and a short `-` delimited description, e.g. `0.0-main-workflow`.
 │
 ├── pyproject.toml     <- Project configuration file with package metadata for 
 │                         dsu_code_challenge and configuration for tools like black
@@ -46,12 +45,19 @@ DS coding challenge for CoCT
 ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
 │   └── figures        <- Generated graphics and figures to be used in reporting
 │
-├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-│                         generated with `pip freeze > requirements.txt`
+├── environment.yml   <- The requirements file for reproducing the analysis environment
 │
 ├── setup.cfg          <- Configuration file for flake8
 │
 └── ds_code_challenge   <- Source code for use in this project.
+    ├── data                
+    │   ├── __init__.py 
+    │   └── s3_loadery.py       <- Code download data from s3
+    │
+    ├── modeling                
+    │   ├── __init__.py 
+    │   ├── predict.py          <- Code to run model inference with trained models          
+    │   └── train.py            <- Code to train models
     │
     ├── __init__.py             <- Makes ds_code_challenge a Python module
     │
@@ -60,11 +66,6 @@ DS coding challenge for CoCT
     ├── dataset.py              <- Scripts to download or generate data
     │
     ├── features.py             <- Code to create features for modeling
-    │
-    ├── modeling                
-    │   ├── __init__.py 
-    │   ├── predict.py          <- Code to run model inference with trained models          
-    │   └── train.py            <- Code to train models
     │
     └── plots.py                <- Code to create visualizations
 ```

@@ -16,6 +16,7 @@ dependencies:
   - scikit-learn
   - ruff
   - pytest
+  - boto3
   - pip:
     - python-dotenv
     - awscli
