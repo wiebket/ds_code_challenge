@@ -48,14 +48,14 @@ test:
 .PHONY: sync_data_down
 sync_data_down:
 	aws s3 sync s3://cct-ds-code-challenge-input-data/data/ \
-		data/  --profile region = af-south-1
+		data/
 	
 
 ## Upload Data to storage system
 .PHONY: sync_data_up
 sync_data_up:
 	aws s3 sync data/ \
-		s3://cct-ds-code-challenge-input-data/data  --profile region = af-south-1
+		s3://cct-ds-code-challenge-input-data/data
 	
 
 

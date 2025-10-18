@@ -6,6 +6,18 @@
 
 DS coding challenge for CoCT
 
+## Setup
+
+1. Clone the repository
+2. Copy `.env.example` to `.env`:
+```bash
+   cp .env.example .env
+```
+3. Fill in your actual credentials in `.env`
+4. Create a virtual environment: `make create_environment`
+5. Install dependencies: `make requirements`
+6. Run the project
+
 ## Project Organization
 
 ```

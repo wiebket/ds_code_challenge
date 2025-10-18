@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 from dotenv import load_dotenv
 from loguru import logger
@@ -30,3 +31,28 @@ try:
     logger.add(lambda msg: tqdm.write(msg, end=""), colorize=True)
 except ModuleNotFoundError:
     pass
+
+
+class Config:
+    """Application configuration from environment variables."""
+
+    # AWS Configuration
+    AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+    AWS_DEFAULT_REGION = os.getenv('AWS_DEFAULT_REGION', 'af-south-1')
+    S3_BUCKET_NAME = os.getenv('S3_BUCKET_NAME')
+
+    @classmethod
+    def validate(cls):
+        """Validate required environment variables."""
+        required = [
+            'AWS_ACCESS_KEY_ID',
+            'AWS_SECRET_ACCESS_KEY',
+            'S3_BUCKET_NAME'
+        ]
+        missing = [var for var in required if not getattr(cls, var)]
+        if missing:
+            raise ValueError(f"Missing required environment variables: {missing}")
+
+# Validate on import
+Config.validate()
