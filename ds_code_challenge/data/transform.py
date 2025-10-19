@@ -47,7 +47,10 @@ def spatial_join(sr_df, hex_df):
     else:
         logger.info(f"Successfully joined all {len(sr_geo_df)} rows")
 
-    return sr_hex_df
+    sr_hex_df['h3_level8_index'].fillna(0, inplace=True)
+    keep_columns = sr_df.columns.to_list()[:-1] + ['h3_level8_index']
+
+    return sr_hex_df[keep_columns]
 
 
 def validate_join(joined_df):
