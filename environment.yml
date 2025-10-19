@@ -18,6 +18,7 @@ dependencies:
   - pytest
   - boto3
   - geopandas
+  - seaborn
   - pip:
     - python-dotenv
     - awscli

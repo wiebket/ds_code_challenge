@@ -2,8 +2,8 @@ import os
 from pathlib import Path
 
 import boto3
-import pandas as pd
 import geopandas as gpd
+import pandas as pd
 
 from ds_code_challenge.config import Config
 
@@ -50,7 +50,7 @@ def load_data(filename, data_dir="raw"):
     filepath = Config.DATA_DIR / data_dir / filename
 
     # check if filename is geojson or csv / csv.gz, then load accordingly
-    if Path(filepath).suffix.lower() == '.geojson':
+    if Path(filepath).suffix.lower() == ".geojson":
         try:
             gdf = gpd.read_file(filepath)
             return gdf
@@ -62,5 +62,3 @@ def load_data(filename, data_dir="raw"):
             return df
         except Exception as e:
             print(f"Error reading {filename}: {e}")
-
-
