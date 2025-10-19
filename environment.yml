@@ -17,6 +17,7 @@ dependencies:
   - ruff
   - pytest
   - boto3
+  - geopandas
   - pip:
     - python-dotenv
     - awscli
