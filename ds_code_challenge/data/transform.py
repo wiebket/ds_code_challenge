@@ -9,10 +9,26 @@ logging.basicConfig(level=logging.INFO)
 
 
 def spatial_join(sr_df, hex_df):
-    # rename hex_df index column to h3_level8_index, then join to sr_df;
-    # log how many records failed to join; add threshold for join error
-    # log time taken for join
-    # if lat, long in joined df is nan, set index to 0
+    """
+    Transform services requests data with the following operations:
+    1. rename hex_df index column to h3_level8_index
+    2. join hex_df to sr_df
+    3. if lat, long in joined df are nan, set h3_level8_index to '0' (str type)
+    4. select columns to keep so that joined df has same columns as sr_df + h3_level8_index
+
+    The function logs time taken for the join operation and how many records failed to join.
+    The join error threshold is set to 22.56%, which is just above the percentage of missing
+    latitude/longitude records in sr_df.
+
+    Parameters
+    ----------
+    sr_df : pandas dataframe with service requests data
+    hex_df : geopandas dataframe with hex-polygons data
+
+    Returns
+    -------
+    pandas dataframe with joined service requests and hex data
+    """
 
     logger = logging.getLogger(__name__)
 
@@ -47,12 +63,31 @@ def spatial_join(sr_df, hex_df):
     else:
         logger.info(f"Successfully joined all {len(sr_geo_df)} rows")
 
-    sr_hex_df['h3_level8_index'].fillna(0, inplace=True)
-    keep_columns = sr_df.columns.to_list()[:-1] + ['h3_level8_index']
+    sr_hex_df["h3_level8_index"].fillna("0", inplace=True)
+    keep_columns = sr_df.columns.to_list()[:-1] + ["h3_level8_index"]
 
-    return sr_hex_df[keep_columns]
+    return sr_hex_df[keep_columns].set_index("notification_number")
 
 
-def validate_join(joined_df):
-    # validate against sr_hex.csv.gz
-    return
+def validate_join(df, val_df):
+    """
+    Validate dataframe join.
+
+    Parameters
+    ----------
+    df : pandas dataframe to validate
+    val_df : validation dataframe to compare against
+
+    Returns
+    -------
+    difference between the dataframes
+    """
+
+    diff = df.compare(val_df)
+
+    if diff.empty:
+        print("DataFrames are identical")
+    else:
+        print(f"Found {len(diff)} differences:\n{diff}")
+
+    return diff
