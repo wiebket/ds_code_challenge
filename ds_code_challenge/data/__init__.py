@@ -1,5 +1,6 @@
 import logging
 
+from .image_loader import load_swimming_pool_dataset  # noqa: F401
 from .s3_loader import download_from_s3, load_data  # noqa: F401
 from .transform import (  # noqa: F401
     filter_date_range,

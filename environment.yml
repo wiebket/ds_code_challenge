@@ -20,6 +20,9 @@ dependencies:
   - geopandas
   - seaborn
   - shapely
+  - pillow
+  - pytorch
+  - torchvision
   - pip:
     - python-dotenv
     - awscli
