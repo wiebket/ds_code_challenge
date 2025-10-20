@@ -6,7 +6,7 @@ from shapely.geometry import Point
 
 from ds_code_challenge.utils import Timer
 
-logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def spatial_join(sr_df, hex_df):
@@ -30,8 +30,6 @@ def spatial_join(sr_df, hex_df):
     -------
     pandas dataframe with joined service requests and hex data
     """
-
-    logger = logging.getLogger(__name__)
 
     # Convert pandas df to GeoDataFrame
     sr_df["geometry"] = sr_df.apply(lambda row: Point(row["longitude"], row["latitude"]), axis=1)
@@ -106,7 +104,6 @@ def requests_by_department_per_day(df):
     -------
     dataframe with columns: [date, department, request_count]
     """
-    logger = logging.getLogger(__name__)
 
     logger.info(f"Aggregating {len(df)} service requests by department and day")
 
@@ -141,8 +138,6 @@ def filter_date_range(daily_counts, start_date, end_date):
     dataframe filtered to date range
     """
 
-    logger = logging.getLogger(__name__)
-
     logger.info(f"Filtering to date range: {start_date} to {end_date}")
 
     start_date = pd.to_datetime(start_date)
@@ -156,3 +151,51 @@ def filter_date_range(daily_counts, start_date, end_date):
     logger.info(f"Filtered to {len(filtered)} records")
 
     return filtered
+
+
+def get_department_day_details(df, department, date):
+    """
+    Get detailed information about requests for a specific department on a given day.
+
+    Parameters
+    ----------
+    df : service request dataframe
+    department : department name
+    date : date to analyze (string 'year-month-day')
+
+    Returns
+    -------
+    dataframe with all requests for that department on that day
+    """
+    date = pd.to_datetime(date)
+
+    # Prepare data
+    df = df.copy()
+    df["creation_timestamp"] = pd.to_datetime(df["creation_timestamp"])
+    df["date"] = df["creation_timestamp"].dt.date
+    df["date"] = pd.to_datetime(df["date"])
+
+    # Filter to specific department and date
+    details = df[(df["department"] == department) & (df["date"] == date)].copy()
+
+    logger.info(f"Found {len(details)} requests for {department} on {date.date()}")
+
+    if len(details) == 0:
+        logger.warning(f"No requests found for {department} on {date.date()}")
+        return details
+
+    # Log summary statistics
+    logger.info("\nRequest Summary:")
+    logger.info(f"  Total requests: {len(details)}")
+    logger.info(f"  Unique codes: {details['code'].nunique()}")
+    logger.info(f"  Unique suburbs: {details['official_suburb'].nunique()}")
+
+    logger.info("\nTop 5 Request Codes:")
+    for code, count in details["code"].value_counts().head(5).items():
+        logger.info(f"  {code}: {count}")
+
+    logger.info("\nTop 5 Suburbs:")
+    for suburb, count in details["official_suburb"].value_counts().head(5).items():
+        logger.info(f"  {suburb}: {count}")
+
+    return details
