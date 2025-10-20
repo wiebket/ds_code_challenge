@@ -1,6 +1,7 @@
 import logging
 
 import geopandas as gpd
+import pandas as pd
 from shapely.geometry import Point
 
 from ds_code_challenge.utils import Timer
@@ -91,3 +92,67 @@ def validate_join(df, val_df):
         print(f"Found {len(diff)} differences:\n{diff}")
 
     return diff
+
+
+def requests_by_department_per_day(df):
+    """
+    Aggregate service requests to daily counts per department.
+
+    Parameters
+    ----------
+    df : Service request dataframe with 'creation_timestamp' and 'department' columns
+
+    Returns
+    -------
+    dataframe with columns: [date, department, request_count]
+    """
+    logger = logging.getLogger(__name__)
+
+    logger.info(f"Aggregating {len(df)} service requests by department and day")
+
+    # Convert timestamp to date
+    df = df.copy()
+    df["creation_timestamp"] = pd.to_datetime(df["creation_timestamp"])
+    df["date"] = df["creation_timestamp"].dt.date
+    df["date"] = pd.to_datetime(df["date"])
+
+    # Aggregate by date and department
+    daily_counts = df.groupby(["date", "department"]).size().reset_index(name="request_count")
+
+    logger.info(f"Aggregated to {len(daily_counts)} date-department combinations")
+    logger.info(f"Date range: {daily_counts['date'].min()} to {daily_counts['date'].max()}")
+    logger.info(f"Departments: {daily_counts['department'].nunique()}")
+
+    return daily_counts
+
+
+def filter_date_range(daily_counts, start_date, end_date):
+    """
+    Filter daily counts to specific date range.
+
+    Parameters
+    ----------
+    daily_counts : pandas dataframe with [date, department, request_count]
+    start_date : start date for date filter (string 'year-month-day')
+    end_date : end date for date filter (string 'year-month-day')
+
+    Returns
+    -------
+    dataframe filtered to date range
+    """
+
+    logger = logging.getLogger(__name__)
+
+    logger.info(f"Filtering to date range: {start_date} to {end_date}")
+
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
+
+    # Filter to date range
+    filtered = daily_counts[
+        (daily_counts["date"] >= start_date) & (daily_counts["date"] <= end_date)
+    ].copy()
+
+    logger.info(f"Filtered to {len(filtered)} records")
+
+    return filtered

@@ -19,6 +19,7 @@ dependencies:
   - boto3
   - geopandas
   - seaborn
+  - shapely
   - pip:
     - python-dotenv
     - awscli
