@@ -16,6 +16,6 @@ DS coding challenge for CoCT
 3. Fill in your actual credentials in `.env`
 4. Create a virtual environment: `make create_environment`
 5. Install dependencies: `make requirements`
-6. Run `0.0-main-workflow.ipynb` for challenge submission
-7. Go to `0.2-swimming-pool-detection.ipynb` for computer vision model training and evaluation 
+6. Run `notebooks/0.0-main-workflow.ipynb` for challenge submission
+7. Go to `notebooks/0.2-swimming-pool-detection.ipynb` for computer vision model training and evaluation 
 
